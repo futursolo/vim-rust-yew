@@ -10,17 +10,18 @@ function! YewEnableSyntaxExtension() abort
     execute 'syntax include @HTMLSyntax syntax/html.vim'
     execute 'syntax include @HTMLSyntax after/syntax/html.vim'
 
-    execute 'syntax match   htmlTagN      contained +<\s*[-a-zA-Z0-9:]\++hs=s+1 contains=rustModPath'
-    execute 'syntax match   htmlTagN      contained +</\s*[-a-zA-Z0-9:]\++hs=s+2 contains=rustModPath'
+    execute 'syntax match   htmlTagN      contained                      +<\s*[-a-zA-Z0-9:]\++hs=s+1         contains=htmlTagName,rustModPath,htmlSpecialTagName,@htmlTagNameCluster'
+    execute 'syntax match   htmlTagN      contained                      +</\s*[-a-zA-Z0-9:]\++hs=s+2        contains=htmlTagName,rustModPath,htmlSpecialTagName,@htmlTagNameCluster'
 
-    execute 'syntax region  htmlRustValue contained matchGroup=htmlValue start="={"    end="}" contains=TOP'
+    execute 'syntax region  htmlRustValue contained matchGroup=Expr      start="={"hs=s+1       end="}"      contains=TOP'
 
-    execute 'syntax region  htmlTag                                      start=+<[^/]+ end=+>+ fold contains=htmlRustValue,htmlRustValue,htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster'
+    execute 'syntax region  htmlTag                                      start=+<[^/]+          end=+>+ fold contains=htmlRustValue,htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster'
+    execute 'syn region  htmlEndTag                                      start=+</+             end=+>+      contains=htmlTagN,htmlTagError'
 
     execute 'syntax match   htmlArg       contained                      "\%([^[:cntrl:][:space:][:punct:][:digit:]]\|_\)\%([^[:cntrl:][:punct:][:space:]]\|_\)*"'
 
-    execute 'syntax region  yewRustExpr   contained matchgroup=Expr      start="{" end="}"          contains=TOP'
-    execute 'syntax region  yewHtmlMacro            matchgroup=rustMacro start="html!\s*{" end="}"  contains=yewRustExpr,@HTMLSyntax'
+    execute 'syntax region  yewRustExpr   contained matchgroup=Expr      start="{"               end="}"     contains=TOP'
+    execute 'syntax region  yewHtmlMacro            matchgroup=Expr      start="html!\s*{"ms=e-1 end="}"     contains=yewRustExpr,@HTMLSyntax'
 
     let b:current_syntax = 'rust'
     let b:yew_syntax_extended = 1
