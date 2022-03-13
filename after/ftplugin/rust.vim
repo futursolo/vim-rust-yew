@@ -10,16 +10,17 @@ function! YewEnableSyntaxExtension() abort
     execute 'syntax include @HTMLSyntax syntax/html.vim'
     execute 'syntax include @HTMLSyntax after/syntax/html.vim'
 
-    execute 'syntax region yewRustExpr matchgroup=Expr  start="{" end="}" contained contains=TOP'
-    execute 'syntax region yewHtmlMacro matchgroup=Macro start="html!\s*{" end="}" contains=yewRustExpr,@HTMLSyntax'
+    execute 'syntax match   htmlTagN      contained +<\s*[-a-zA-Z0-9:]\++hs=s+1 contains=rustModPath'
+    execute 'syntax match   htmlTagN      contained +</\s*[-a-zA-Z0-9:]\++hs=s+2 contains=rustModPath'
 
-    execute 'syn match   htmlTagN     contained +<\s*[-a-zA-Z0-9:]\++hs=s+1 contains=rustModPath'
-    execute 'syn match   htmlTagN     contained +</\s*[-a-zA-Z0-9:]\++hs=s+2 contains=rustModPath'
+    execute 'syntax region  htmlRustValue contained matchGroup=htmlValue start="={"    end="}" contains=TOP'
 
-    execute 'syn region  htmlRustValue    contained start="={" end="}"   contains=yewRustExpr'
-    execute 'syn region  htmlTag                start=+<[^/]+   end=+>+ fold contains=htmlRustValue,htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster,yewRustExpr'
+    execute 'syntax region  htmlTag                                      start=+<[^/]+ end=+>+ fold contains=htmlRustValue,htmlRustValue,htmlTagN,htmlString,htmlArg,htmlValue,htmlTagError,htmlEvent,htmlCssDefinition,@htmlPreproc,@htmlArgCluster'
 
-    execute 'syn match htmlArg contained "\%([^[:cntrl:][:space:][:punct:][:digit:]]\|_\)\%([^[:cntrl:][:punct:][:space:]]\|_\)*"'
+    execute 'syntax match   htmlArg       contained                      "\%([^[:cntrl:][:space:][:punct:][:digit:]]\|_\)\%([^[:cntrl:][:punct:][:space:]]\|_\)*"'
+
+    execute 'syntax region  yewRustExpr   contained matchgroup=Expr      start="{" end="}"          contains=TOP'
+    execute 'syntax region  yewHtmlMacro            matchgroup=rustMacro start="html!\s*{" end="}"  contains=yewRustExpr,@HTMLSyntax'
 
     let b:current_syntax = 'rust'
     let b:yew_syntax_extended = 1
