@@ -12,11 +12,9 @@
 let b:current_syntax = ''
 unlet b:current_syntax
 
-syn include @HTMLSyntax syntax/html.vim
+syntax clear
 
-" Yew html! Syntax
-syn region yewHtmlMacro start="html!\s*{" end="}" contained contains=@HTMLSyntax
-syn region yewRustExpr  start="{" end="}" containedin=@HTMLSyntax contains=ALL
+syn include @HTMLSyntax syntax/html.vim
 
 """ Yew Extension End
 
@@ -389,6 +387,14 @@ hi def link rustAsmOptionsKey rustAttribute
 
 syn sync minlines=200
 syn sync maxlines=500
+
+""" Yew Extension Start
+
+" Yew html! Syntax
+syn region yewHtmlMacro start="html!\s*{" end="}" contained contains=@HTMLSyntax
+syn region yewRustExpr  start="{" end="}" containedin=@HTMLSyntax contains=ALL
+
+""" Yew Extension End
 
 let b:current_syntax = "rust"
 
